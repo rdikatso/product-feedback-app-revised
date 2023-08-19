@@ -31,6 +31,8 @@
 </template>
 
 <script>
+// import sourceData from '@/data.json'
+// console.log ("SourceData", sourceData)
 export default {
   name: 'HelloWorld',
   props: {
