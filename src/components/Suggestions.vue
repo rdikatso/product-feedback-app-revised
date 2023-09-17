@@ -68,7 +68,15 @@
                     {{ productRequests.length}} <span>&nbsp;Suggestions</span>
                 </div>
                 <div class="col-md-6 d-flex justify-content-start align-items-center">
-                    <span>Sort by:</span><span>Sort Option <i class="fa-solid fa-chevron-down"></i></span>
+                    <span>Sort by: </span>
+                    <div class="custom-select">
+                        <select v-model="selected">
+                            <option class="option" v-for="(option, index) in sortOptions" :key="index" :value="option">
+                                {{ option }}
+                            </option>
+                        </select>
+                    </div>
+                  
                 </div>
                 <div class="col-md-3 d-flex justify-content-end align-items-center">
                     <button class="default-btn">+ Add Feedback</button>
@@ -77,7 +85,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="suggestion-container d-flex justify-content-center align-items-center" v-for="(request, index) in productRequests" :key="index">
+            <div class="suggestion-container d-flex justify-content-center align-items-center" v-for="(request, index) in sortedProductRequests" :key="index">
                 <div class="upvotes-container col-md-1">
                     <i class="fa-solid fa-chevron-up"></i>
                     <p class="upvotes">{{request.upvotes}}</p>
@@ -90,8 +98,8 @@
                 </div>
                 <div class="comment col-md-2">
                     <i class="fa-solid fa-comment"></i>
-                    <span v-if="request.comments">&nbsp;{{request.comments.length}}</span>
-                    <span v-else-if="request.comments == null">&nbsp;0</span>
+                    <span class="comments-no" v-if="request.comments">&nbsp;{{request.comments.length}}</span>
+                    <span class="comments-no" v-else-if="request.comments == null">&nbsp;0</span>
                 </div>
             </div>
         </div>
@@ -107,7 +115,9 @@ export default {
     name: 'HelloWorld',
     data (){
         return {
-            productRequests: sourceData.productRequests
+            productRequests: sourceData.productRequests,
+            sortOptions: ['Most Upvotes', 'Least Upvotes', 'Most Comments', 'Least Comments'],
+            selected: 'Most Upvotes'
         }
     },
     computed: {
@@ -160,6 +170,78 @@ export default {
             console.log("STATUS COUNTS", statusCounts)
 
             return statusCounts
+        },
+        sortedProductRequests(){
+            //Check what sorting property is used
+
+            let sortingMethod = this.selected
+
+            console.log("SORTING METHOD", sortingMethod)
+            //Initially sort the requests by most upvotes
+            let sortedProductRequests = this.productRequests
+
+            if(sortingMethod == 'Most Upvotes'){
+                sortedProductRequests = sortedProductRequests.sort ((a,b) => {
+                    return b.upvotes - a.upvotes
+                })
+            }else if (sortingMethod == 'Least Upvotes'){
+                sortedProductRequests = sortedProductRequests.sort ((a,b) => {
+                    return a.upvotes - b.upvotes
+                })
+            }else if (sortingMethod == 'Most Comments'){
+                //map through the list of product request
+                //if comments are not available, give the comment and empty array
+
+                sortedProductRequests = sortedProductRequests.sort ((a,b) => {
+                 
+                 const commentsLengthA = (a.comments || []).length; // Default to 0 if key doesn't exist
+                 const commentsLengthB = (b.comments || []).length;
+                
+                 // Compare based on the length of comments
+                 return commentsLengthB - commentsLengthA; // Sort in descending order
+                })
+            }else if(sortingMethod == 'Least Comments'){
+                //map through the list of product request
+                //if comments are not available, give the comment and empty array
+
+                sortedProductRequests = sortedProductRequests.sort ((a,b) => {
+                 
+                 const commentsLengthA = (a.comments || []).length; // Default to 0 if key doesn't exist
+                 const commentsLengthB = (b.comments || []).length;
+                
+                 // Compare based on the length of comments
+                 return commentsLengthA - commentsLengthB; // Sort in ascending order
+                })
+            }
+
+          
+
+            return sortedProductRequests
+        }
+    },
+    methods: {
+        select(option){
+            console.log("SELECTED OPTION IS", option)
+            // let sortedProductRequests = this.productRequests
+            if(option == 'Least Comments'){
+                this.productRequests = this.productRequests.sort((a,b) => {
+                    return a.upvotes - b.upvotes
+                })
+            }
+            if(option == 'Most Comments'){
+                this.productRequests = this.productRequests.sort((a,b) => {
+                    return b.upvotes - a.upvotes
+                })
+            }
+             if(option == 'Most Upvotes'){
+                this.productRequests = this.productRequests.sort((a,b) => {
+                   return (a.comments.length === undefined ||  a.comments.length === null) - (b.comments.length === undefined || b.comments.length === null) || a.comments.length - b.comments.length
+                })
+            }
+
+            console.log("SORTED PROPDUCT REQUESTS", this.productRequests)
+
+
         }
     }
 }
@@ -231,6 +313,24 @@ body {
     padding: 1.25rem 1rem;
     border-radius: 0.625rem;
     margin-bottom: 2.56rem;
+    position: relative;
+
+    .custom-select {
+        width: 200px;
+        background-color: #f2f2f2;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-family: Arial, sans-serif;
+        color: #333;
+
+        select {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+    }
+
 }
 .default-btn {
     border-radius: 0.625rem;
@@ -241,15 +341,67 @@ body {
     border: none;
 }
 .suggestion-container {
-    border: 1px solid #000;
+    background-color: #fff;
     margin-bottom: 1.5rem;
     padding: 1.75rem 2rem;
     border-radius: 0.625rem;
+    .suggestion {
+        .title{
+           color: #3A4374;
+            font-size: 1.125rem;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            letter-spacing: -0.01563rem; 
+        }
+        .desc {
+            color: #647196;
+            font-size: 1rem;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+        }
+        .category{
+            border-radius: 0.625rem;
+            background: #F2F4FF; 
+            padding: 0.38rem 1rem;
+            color: #4661E6;
+            font-size: 0.8125rem;
+            font-style: normal;
+            font-weight: 600;
+            line-height: normal; 
+            text-transform: capitalize; 
+        }
+    }
 
     .upvotes-container{
-        border: 1px solid #000;
+        background-color: #F2F4FE;
         border-radius: 0.625rem;
         padding-top: 0.72rem;
+        max-width: 2.5rem;
+        
+        .upvotes{
+            color: #3A4374;
+            font-size: 0.8125rem;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            letter-spacing: -0.01131rem;
+        }
+    }
+    .comment{
+        .fa-comment{
+            color: #CDD2EE;
+        }
+    }
+    .comments-no {
+        color: #3A4374;
+        text-align: center;
+        font-size: 1rem;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        letter-spacing: -0.01388rem;
     }
 }
 .roadmap-container {
