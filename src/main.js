@@ -4,6 +4,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 // import HelloWorld from '@/components/HelloWorld'
 import Suggestions from '@/components/Suggestions'
+import SuggestionDetail from '@/components/SuggestionDetail'
 // import * as VueRouter from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
 import '@fortawesome/fontawesome-free/css/all.css'
@@ -11,8 +12,13 @@ import '@fortawesome/fontawesome-free/js/all.js'
 
 const routes = [
     { path: '/', 
-    name : 'Suggestions',
+    name : 'SuggestionsComponent',
     component: Suggestions 
+    },
+    { path: '/suggestion/:id', 
+    name : 'SuggestionDetail',
+    component: SuggestionDetail,
+    props : true
     },
 ]
 

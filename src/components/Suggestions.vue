@@ -85,7 +85,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="suggestion-container d-flex justify-content-center align-items-center" v-for="(request, index) in sortedProductRequests" :key="index">
+            <router-link class="suggestion-container d-flex justify-content-center align-items-center" v-for="(request, index) in sortedProductRequests" :key="index" :to="{name: 'SuggestionDetail', params: {id:request.id}}">
                 <div class="upvotes-container col-md-1">
                     <i class="fa-solid fa-chevron-up"></i>
                     <p class="upvotes">{{request.upvotes}}</p>
@@ -101,7 +101,7 @@
                     <span class="comments-no" v-if="request.comments">&nbsp;{{request.comments.length}}</span>
                     <span class="comments-no" v-else-if="request.comments == null">&nbsp;0</span>
                 </div>
-            </div>
+            </router-link>
         </div>
         <!-- <div> {{productRequests}}</div> -->
     </div>
@@ -112,7 +112,7 @@
 import sourceData from '@/data.json'
 console.log ("SourceData", sourceData)
 export default {
-    name: 'HelloWorld',
+    name: 'SuggestionsComponent',
     data (){
         return {
             productRequests: sourceData.productRequests,
@@ -247,10 +247,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
-body {
-    background: #F7F8FD;
-}
+<style lang="scss" scoped>
 .logo-container {
     background-image : url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="255" height="137" viewBox="0 0 255 137" fill="none"><rect width="255" height="137" rx="10" fill="url(%23paint0_radial_0_2333)"/><mask id="mask0_0_2333" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="255" height="137"><rect width="255" height="137" rx="10" fill="white"/></mask><g mask="url(%23mask0_0_2333)"><g opacity="0.765433" filter="url(%23filter0_f_0_2333)"><circle cx="-0.5" cy="-40.5" r="96" fill="%237AD8FB"/></g><g filter="url(%23filter1_f_0_2333)"><circle cx="304.5" cy="137.5" r="96" fill="%23FBB57A"/></g></g><defs><filter id="filter0_f_0_2333" x="-186.203" y="-226.203" width="371.407" height="371.407" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur stdDeviation="44.8517" result="effect1_foregroundBlur_0_2333"/></filter><filter id="filter1_f_0_2333" x="118.797" y="-48.2033" width="371.407" height="371.407" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur stdDeviation="44.8517" result="effect1_foregroundBlur_0_2333"/></filter><radialGradient id="paint0_radial_0_2333" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(264.945 -14.2296) rotate(146.823) scale(322.666 301.288)"><stop stop-color="%23E84D70"/><stop offset="0.530886" stop-color="%23A337F6"/><stop offset="1" stop-color="%2328A7ED"/></radialGradient></defs></svg>');
     background-repeat:no-repeat;
@@ -345,6 +342,8 @@ body {
     margin-bottom: 1.5rem;
     padding: 1.75rem 2rem;
     border-radius: 0.625rem;
+    text-decoration: none; /* Removes underline */
+    color: inherit; /* Inherits color from parent element */
     .suggestion {
         .title{
            color: #3A4374;
@@ -460,6 +459,4 @@ body {
     }
     
 }
-
-
 </style>
