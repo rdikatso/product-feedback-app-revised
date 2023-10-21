@@ -5,6 +5,7 @@ import App from './App.vue'
 // import HelloWorld from '@/components/HelloWorld'
 import Suggestions from '@/components/Suggestions'
 import SuggestionDetail from '@/components/SuggestionDetail'
+import PageNotFound from '@/components/PageNotFound'
 // import * as VueRouter from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
 import '@fortawesome/fontawesome-free/css/all.css'
@@ -19,6 +20,10 @@ const routes = [
     name : 'SuggestionDetail',
     component: SuggestionDetail,
     props : true
+    },
+    { path: '/:pathMatch(.*)*',
+      name: 'PageNotFound', 
+      component: PageNotFound 
     },
 ]
 

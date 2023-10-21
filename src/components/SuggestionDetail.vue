@@ -46,6 +46,25 @@
                         <div>
                             <p class="text-start">{{comment.content}}</p>
                         </div>
+                        <div v-if="comment.replies && comment.replies.length > 0" >
+                            <div class="comment-replies row mb-4" v-for="(reply,index) in comment.replies" :key="index">
+                                <div class="col-md-2">
+                                    <img class="avatar" :src="`${reply.user.image.slice(1)}`" :alt="comment.user.name"/>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="d-flex flex-column align-items-start">
+                                            <p class="name">{{reply.user.name}}</p>
+                                            <p class="username">@{{reply.user.username}}</p>
+                                        </div>
+                                        <p class="d-flex justify-content-end align-items-center">Reply</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-start"><span class="fw-bold me-2">@{{reply.replyingTo}}</span>{{reply.content}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
