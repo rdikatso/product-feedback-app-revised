@@ -1,8 +1,5 @@
 <template>
   <div class="row">
-    <h1>
-        Hello SuggestionDetail {{suggestionID}}
-    </h1>
     <div>{{suggestion}}</div>
 
     <div class="row">
@@ -71,6 +68,26 @@
 
         </div>
     </div>
+    <div class="row">
+     <div class="add-comment-container">
+        <h1 class="add-comment-title d-flex">Add Comment</h1>
+        <form @submit.prevent="addComment">
+            <div class="form-group">
+                <label for="addCommentTextArea" class="visually-hidden">Add Comment</label>
+                <textarea v-model="newCommentText" @input="updateCharacterCount" name="" id="addCommentTextArea" rows="5" class="form-control custom-textarea" placeholder="Type your comment here"/>
+            </div>
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="character-count d-flex">
+                    {{ charactersLeft }} Characters left
+                </div>
+                <div class="form-actions d-flex justify-content-end">
+                    <button class="btn btn-blue">Submit Post</button>
+                </div>
+            </div>
+           
+        </form>
+    </div>
+  </div>
   </div>
 </template>
 
@@ -87,7 +104,10 @@ export default {
     },
     data (){
         return {
-            
+           newCommentText:'', 
+           posts : sourceData,
+           maxCharacters: 250,
+           charactersLeft: 250
         }
     },
     computed: {
@@ -98,11 +118,33 @@ export default {
         // },
         suggestion(){
             console.log("SELECTED SUGGESTION", sourceData.productRequests.find(destination => destination.id == this.id))
-            return sourceData.productRequests.find(destination => destination.id == this.id)
+            return this.posts.productRequests.find(destination => destination.id == this.id)
         }
       
     },
     methods: {
+        addComment(){
+            const comment = {
+                content: this.newCommentText,
+                id : Math.floor(Math.random()),
+                user: {
+                    "image": "./assets/user-images/image-victoria.jpg",
+                    "name": "Victoria Mejia",
+                    "username": "arlen_the_marlin"
+                },
+            }
+            this.suggestion.comments.push(comment);
+            this.newCommentText = '';
+            this.charactersLeft = this.maxCharacters;
+        },
+        updateCharacterCount() {
+            this.charactersLeft = this.maxCharacters - this.newCommentText.length;
+
+            if (this.charactersLeft < 0) {
+                this.newCommentText = this.newCommentText.slice(0, this.maxCharacters);
+                this.charactersLeft = 0;
+            }
+        }
    
     }
 }
@@ -218,6 +260,59 @@ export default {
             font-style: normal;
             font-weight: 400;
             line-height: normal;
+        }
+    }
+    .add-comment-container {
+        background-color: #fff;
+        margin-bottom: 1.5rem;
+        padding: 1.75rem 2rem;
+        border-radius: 0.625rem; 
+
+        .add-comment-title{
+            color: #3A4374;
+            //font-family: Jost;
+            font-size: 1.125rem;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            letter-spacing: -0.01563rem;
+            
+            margin-bottom: 1.5rem;
+        }
+        .custom-textarea{
+            padding: 1rem 1.5rem;
+            border-radius: 0.3125rem;
+            background: #F7F8FD;
+            border: none;
+            resize: none;
+        }
+        /* In your component's style block or a global stylesheet */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            margin: -1px;
+            padding: 0;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        .form-actions{
+            margin-top: 1.5rem;
+        }
+        .btn {
+            border-radius: 0.625rem;
+            background: #AD1FEA;
+
+            color: #F2F4FE;
+            //font-family: Jost;
+            font-size: 0.875rem;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        }
+        .character-count{
+            margin-top: 1.5rem;
         }
     }
     

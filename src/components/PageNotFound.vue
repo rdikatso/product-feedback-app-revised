@@ -1,5 +1,9 @@
 <template>
-<h1>Page Not Found</h1>
+<div class="text-center">
+    <h1>Page Not Found</h1>
+    <router-link :to="{name: 'SuggestionsComponent'}">Read some cool suggestions</router-link>
+</div>
+
   
 </template>
 

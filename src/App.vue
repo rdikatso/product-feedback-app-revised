@@ -16,5 +16,8 @@ export default {
 @import 'assets/styles.css';
   body {
     background: #F7F8FD;
+    .container{
+      margin-bottom: 2rem;
+    }
   }
 </style>
