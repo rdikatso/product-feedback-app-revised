@@ -38,7 +38,7 @@
                                 <p class="name">{{comment.user.name}}</p>
                                 <p class="username">@{{comment.user.username}}</p>
                             </div>
-                            <p class="d-flex justify-content-end align-items-center">Reply</p>
+                            <p class="d-flex justify-content-end align-items-center" @click="toggleReply(comment.id)">Reply</p>
                         </div>
                         <div>
                             <p class="text-start">{{comment.content}}</p>
@@ -59,6 +59,14 @@
                                     <div>
                                         <p class="text-start"><span class="fw-bold me-2">@{{reply.replyingTo}}</span>{{reply.content}}</p>
                                     </div>
+                                </div>
+                            </div>
+                            <div v-if="replyingTo === comment.id" class="row">
+                                <div class="col-md-10">
+                                    <textarea v-model="replyContent" rows="3" class="form-control custom-textarea"></textarea>
+                                </div>
+                                <div class="col-md-2 mt-3 mt-md-0">
+                                    <button @click="submitReply(comment.id)" class="btn reply-btn">Post Reply</button>
                                 </div>
                             </div>
                         </div>
@@ -107,7 +115,10 @@ export default {
            newCommentText:'', 
            posts : sourceData,
            maxCharacters: 250,
-           charactersLeft: 250
+           charactersLeft: 250,
+           newReplyText: false,
+           replyingTo: null,
+           replyContent: ''
         }
     },
     computed: {
@@ -144,6 +155,39 @@ export default {
                 this.newCommentText = this.newCommentText.slice(0, this.maxCharacters);
                 this.charactersLeft = 0;
             }
+        },
+        toggleReply(commentId) {
+            console.log("TOGGLE REPLY!", commentId)
+            this.replyingTo = this.replyingTo === commentId ? null : commentId;
+            this.replyContent = ''; // Clear reply content when toggling
+        },
+        submitReply(commentId) {
+     
+            const commentedOn = this.suggestion.comments.find(comment => comment.id === commentId);
+            if(commentedOn){
+                const reply = {
+                    content: this.replyContent,
+                    replyingTo: commentedOn.user.username,
+                     user: {
+                        "image": "./assets/user-images/image-ryan.jpg",
+                        "name": "Ryan Welles",
+                        "username": "voyager.344"
+                    }
+                }
+
+
+                if(!commentedOn.replies) {
+                    commentedOn.replies = [];
+                }
+
+                commentedOn.replies.push(reply);
+                this.replyContent =  '';
+                console.log(`Replying to ${commentId}: ${this.replyContent}`);
+                this.toggleReply(commentId); // Close the reply textarea after submission
+            }else {
+                console.warn (`Comment with ID ${commentId} not found. `);
+            }
+            
         }
    
     }
@@ -314,6 +358,24 @@ export default {
         .character-count{
             margin-top: 1.5rem;
         }
+    }
+    .custom-textarea{
+        padding: 1rem 1.5rem;
+        border-radius: 0.3125rem;
+        background: #F7F8FD;
+        border: none;
+        resize: none;
+    }
+    .btn {
+        border-radius: 0.625rem;
+        background: #AD1FEA;
+
+        color: #F2F4FE;
+        //font-family: Jost;
+        font-size: 0.875rem;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
     }
     
 </style>
