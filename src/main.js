@@ -6,16 +6,30 @@ import App from './App.vue'
 import Suggestions from '@/components/Suggestions'
 import SuggestionDetail from '@/components/SuggestionDetail'
 import PageNotFound from '@/components/PageNotFound'
+import AddSuggestion from '@/components/AddSuggestion'
+import AddFeedback from './components/AddFeedback.vue'  
 // import * as VueRouter from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
 import '@fortawesome/fontawesome-free/css/all.css'
 import '@fortawesome/fontawesome-free/js/all.js'
+
+import VueSelect from 'vue-select';
+
+import 'vue-select/dist/vue-select.css';
 
 const routes = [
     { path: '/', 
     name : 'SuggestionsComponent',
     component: Suggestions 
     },
+    { path: '/add-suggestion', 
+    name : 'AddSuggestion',
+    component: AddSuggestion 
+    },
+    { path: '/add-feedback', 
+    name: 'AddFeedback', 
+    component: AddFeedback 
+  }, 
     { path: '/suggestion/:id', 
     name : 'SuggestionDetail',
     component: SuggestionDetail,
@@ -27,6 +41,7 @@ const routes = [
     },
 ]
 
+
 const router = createRouter({
     // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
     history: createWebHistory(),
@@ -36,6 +51,7 @@ const router = createRouter({
 const feedbackApp = createApp(App)
 
 feedbackApp.use(router)
+feedbackApp.component('VueSelect', VueSelect);
 
 feedbackApp.mount('#app')
 //createApp(App).mount('#app')
