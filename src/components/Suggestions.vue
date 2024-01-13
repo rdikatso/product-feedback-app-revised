@@ -69,14 +69,18 @@
                 </div>
                 <div class="col-md-6 d-flex justify-content-start align-items-center">
                     <span>Sort by: </span>
-                    <div class="custom-select">
+                    <!-- <div class="custom-select">
                         <select v-model="selected">
                             <option class="option" v-for="(option, index) in sortOptions" :key="index" :value="option">
                                 {{ option }}
                             </option>
                         </select>
-                    </div>
-                  
+                    </div> -->
+                     <v-select
+                        v-model="selected"
+                        :options="sortOptions"
+                        class="new-styles"
+                    ></v-select>
                 </div>
                 <div class="col-md-3 d-flex justify-content-end align-items-center">
                     <button class="default-btn">+ Add Feedback</button>
@@ -111,7 +115,15 @@
 
 <script>
 import sourceData from '@/data.json'
-console.log ("SourceData", sourceData)
+import vSelect from 'vue-select';
+import 'vue-select/dist/vue-select.css';
+import dayjs from 'dayjs'
+import calender from 'dayjs/plugin/calendar'
+import duration from 'dayjs/plugin/duration'
+dayjs.extend(calender)
+dayjs.extend(duration)
+
+
 export default {
     name: 'SuggestionsComponent',
     data (){
@@ -120,6 +132,25 @@ export default {
             sortOptions: ['Most Upvotes', 'Least Upvotes', 'Most Comments', 'Least Comments'],
             selected: 'Most Upvotes'
         }
+    },
+    components: {
+        vSelect,
+    },
+    created(){
+        var now = dayjs();
+        console.log("What is the date now", now);
+        console.log(dayjs('2018-04-13 19:18'))
+        console.log('CALENDAR',dayjs().calendar(dayjs('2008-01-01')))
+
+        console.log("USE FORMAT PLUGIN", dayjs.duration({
+        seconds: 1,
+        minutes: 2,
+        hours: 3,
+        days: 4,
+        months: 6,
+        years: 7
+        }).format('YYYY-MM-DDTHH:mm:ss') )
+
     },
     computed: {
         categories (){
@@ -221,29 +252,29 @@ export default {
         }
     },
     methods: {
-        select(option){
-            console.log("SELECTED OPTION IS", option)
-            // let sortedProductRequests = this.productRequests
-            if(option == 'Least Comments'){
-                this.productRequests = this.productRequests.sort((a,b) => {
-                    return a.upvotes - b.upvotes
-                })
-            }
-            if(option == 'Most Comments'){
-                this.productRequests = this.productRequests.sort((a,b) => {
-                    return b.upvotes - a.upvotes
-                })
-            }
-             if(option == 'Most Upvotes'){
-                this.productRequests = this.productRequests.sort((a,b) => {
-                   return (a.comments.length === undefined ||  a.comments.length === null) - (b.comments.length === undefined || b.comments.length === null) || a.comments.length - b.comments.length
-                })
-            }
+        // select(option){
+        //     console.log("SELECTED OPTION IS", option)
+        //     //let sortedProductRequests = this.productRequests
+        //     if(option == 'Least Comments'){
+        //         this.productRequests = this.productRequests.sort((a,b) => {
+        //             return a.upvotes - b.upvotes
+        //         })
+        //     }
+        //     if(option == 'Most Comments'){
+        //         this.productRequests = this.productRequests.sort((a,b) => {
+        //             return b.upvotes - a.upvotes
+        //         })
+        //     }
+        //      if(option == 'Most Upvotes'){
+        //         this.productRequests = this.productRequests.sort((a,b) => {
+        //            return (a.comments.length === undefined ||  a.comments.length === null) - (b.comments.length === undefined || b.comments.length === null) || a.comments.length - b.comments.length
+        //         })
+        //     }
 
-            console.log("SORTED PROPDUCT REQUESTS", this.productRequests)
+        //     console.log("SORTED PROPDUCT REQUESTS", this.productRequests)
 
 
-        }
+        // }
     }
 }
 </script>
@@ -326,9 +357,16 @@ export default {
             height: 100%;
             border: none;
         }
-        
+       
     }
-
+    .new-styles {
+        .vs__dropdown-toggle {
+            width: 200px;
+            height: 1rem;
+        }
+    }
+        
+   
 }
 .default-btn {
     border-radius: 0.625rem;

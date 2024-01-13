@@ -6,7 +6,6 @@ import App from './App.vue'
 import Suggestions from '@/components/Suggestions'
 import SuggestionDetail from '@/components/SuggestionDetail'
 import PageNotFound from '@/components/PageNotFound'
-import AddSuggestion from '@/components/AddSuggestion'
 import AddFeedback from './components/AddFeedback.vue'  
 // import * as VueRouter from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
@@ -21,10 +20,6 @@ const routes = [
     { path: '/', 
     name : 'SuggestionsComponent',
     component: Suggestions 
-    },
-    { path: '/add-suggestion', 
-    name : 'AddSuggestion',
-    component: AddSuggestion 
     },
     { path: '/add-feedback', 
     name: 'AddFeedback', 
