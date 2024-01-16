@@ -64,10 +64,10 @@
                     </svg>
                 </div>
             
-                <div class="col-md-2 d-flex justify-content-start align-items-center">
-                    {{ productRequests.length}} <span>&nbsp;Suggestions</span>
+                <div class="col-md-2 d-flex justify-content-start align-items-center fw-bold">
+                    {{ productRequests.length}} <span>&nbsp;&nbsp;Suggestions</span>
                 </div>
-                <div class="col-md-6 d-flex justify-content-start align-items-center">
+                <div class="col-md-6 d-flex justify-content-center align-items-center">
                     <span>Sort by: </span>
                     <!-- <div class="custom-select">
                         <select v-model="selected">
@@ -76,14 +76,24 @@
                             </option>
                         </select>
                     </div> -->
-                     <v-select
+                       <v-select
                         v-model="selected"
                         :options="sortOptions"
                         class="new-styles"
-                    ></v-select>
+                        >
+                           <template #option="option">
+                                 <div class="d-flex justify-content-between">
+                                    <span>{{ option.label }}</span>
+                                    <span v-if="selected && selected === option.label"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="10" viewBox="0 0 13 10" fill="none">
+                                        <path d="M0.968262 4.85894L4.49995 8.39062L11.9999 0.890625" stroke="#AD1FEA" stroke-width="2"/>
+                                    </svg></span>
+                                </div>
+                            </template>
+                        
+                        </v-select>
                 </div>
                 <div class="col-md-3 d-flex justify-content-end align-items-center">
-                    <button class="default-btn">+ Add Feedback</button>
+                    <router-link :to="{name: 'AddFeedback'}" class="default-btn">+ Add Feedback</router-link>
                 </div>
                 
             </div>
@@ -367,14 +377,6 @@ export default {
     }
         
    
-}
-.default-btn {
-    border-radius: 0.625rem;
-    background: #AD1FEA;
-    color: #fff;
-    max-width: 9.875rem;
-    padding: 0.6rem 0.72rem;
-    border: none;
 }
 .suggestion-container {
     background-color: #fff;

@@ -8,33 +8,26 @@
             <p class="input-description d-flex">Add a short, descriptive headline</p>
             <input type="text" id="title" v-model="feedback.title" class="form-control" required>
         </div>
-
-        <!-- <div class="select-wrapper">
-        <div class="mb-5">
-            <label for="category" class="form-label d-flex">Category</label>
-            <p class="input-description d-flex">Choose a category for your feedback</p>
-            <select id="category" v-model="feedback.category" class="form-select" required>
-            <option value="Feature">Feature</option>
-            <option value="UI">UI</option>
-            <option value="UX">UX</option>
-            <option value="Enhancement">Enhancement</option>
-            <option value="Bug">Bug</option>
-            </select>
-        </div>
-        </div> -->
-        <!-- <div>V-SELECT HERE</div> -->
-        <!-- <v-select :options="categories" label="value"></v-select> -->
         <div class="mb-5">
             <label for="category" class="form-label d-flex">Category</label>
             <p class="input-description d-flex">Choose a category for your feedback</p>
             <v-select
             v-model="feedback.category"
             :options="categoryOptions"
-            label="name"
             :reduce="category => category.value"
             required
             class="new-styles"
-            ></v-select>
+            >
+              <template #option="option">
+                <div class="d-flex justify-content-between">
+                  <span>{{ option.name }}</span>
+                  <span v-if="feedback.category && feedback.category === option.name"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="10" viewBox="0 0 13 10" fill="none">
+                      <path d="M0.968262 4.85894L4.49995 8.39062L11.9999 0.890625" stroke="#AD1FEA" stroke-width="2"/>
+                  </svg></span>
+                </div>
+              </template>
+            
+            </v-select>
         </div>
         <div class="mb-5">
             <label for="details" class="form-label d-flex">Feedback Details</label>
@@ -43,8 +36,8 @@
         </div>
 
         <div class="mb-5 d-flex justify-content-end">
-            <button type="button" class="btn btn-secondary cancel-btn" @click="cancel">Cancel</button>
-            <button type="submit" class="btn btn-primary add-btn">Add Feedback</button>
+            <button type="button" class="default-btn btn btn-secondary cancel-btn" @click="cancel">Cancel</button>
+            <button type="submit" class="default-btn btn btn-primary add-btn">Add Feedback</button>
         </div>
         </form>
     </div>
@@ -108,6 +101,7 @@ export default {
     cancel() {
       // You can handle the cancel logic here
       console.log('Cancelled');
+      this.$router.go(-1);
     }
   }
 };
