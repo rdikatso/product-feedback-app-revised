@@ -14,7 +14,7 @@ import '@fortawesome/fontawesome-free/js/all.js'
 
 import VueSelect from 'vue-select';
 
-import 'vue-select/dist/vue-select.css';
+import 'vue-select/dist/vue-select.css'
 
 const routes = [
     { path: '/', 

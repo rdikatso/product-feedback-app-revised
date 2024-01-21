@@ -3,19 +3,23 @@
     <div class="row feedback-container">
         <h2 class="title">Create New Feedback</h2>
         <form @submit.prevent="addFeedback">
-        <div class="mb-5">
+        <div class="mb-5" :class="{ error: v$.feedback.title.$errors.length }">
             <label for="title" class="form-label d-flex">Feedback Title</label>
             <p class="input-description d-flex">Add a short, descriptive headline</p>
-            <input type="text" id="title" v-model="feedback.title" class="form-control" required>
+            <input type="text" id="title" v-model="v$.feedback.title.$model" class="form-control" :class="{ error: v$.feedback.title.$errors.length }">
+            <!-- error message -->
+            <div class="input-errors" v-for="(error, index) of v$.feedback.title.$errors" :key="index">
+              <div class="d-flex error-msg">{{ error.$message }}</div>
+            </div>
         </div>
-        <div class="mb-5">
+        <div class="mb-5" :class="{ error: v$.feedback.category.$errors.length }">
             <label for="category" class="form-label d-flex">Category</label>
             <p class="input-description d-flex">Choose a category for your feedback</p>
             <v-select
-            v-model="feedback.category"
+            v-model="v$.feedback.category.$model"
             :options="categoryOptions"
             :reduce="category => category.value"
-            required
+            :label="'name'"
             class="new-styles"
             >
               <template #option="option">
@@ -26,13 +30,18 @@
                   </svg></span>
                 </div>
               </template>
-            
             </v-select>
+            <div class="input-errors" v-for="(error, index) of v$.feedback.category.$errors" :key="index">
+              <div class="d-flex error-msg">{{ error.$message }}</div>
+            </div>
         </div>
-        <div class="mb-5">
+        <div class="mb-5" :class="{ error: v$.feedback.details.$errors.length }">
             <label for="details" class="form-label d-flex">Feedback Details</label>
             <p class="input-description d-flex">Include any specific comments on what should be improved, added, etc.</p>
-            <textarea id="details" v-model="feedback.details" class="form-control custom-textarea" rows="4" required></textarea>
+            <textarea id="details" v-model="v$.feedback.details.$model" class="form-control custom-textarea" rows="4" :class="{ error: v$.feedback.details.$errors.length }"></textarea>
+             <div class="input-errors" v-for="(error, index) of v$.feedback.details.$errors" :key="index">
+              <div class="d-flex error-msg">{{ error.$message }}</div>
+            </div>
         </div>
 
         <div class="mb-5 d-flex justify-content-end">
@@ -45,14 +54,20 @@
 </template>
 
 <script>
+import useVuelidate from '@vuelidate/core'
+import { required, helpers } from '@vuelidate/validators'
 import sourceData from '@/data.json'
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
+
 
 export default {
   components: {
     vSelect,
    },
+  setup () {
+    return { v$: useVuelidate() }
+  },
   data() {
     return {
       feedback: {
@@ -70,8 +85,48 @@ export default {
       productRequests: sourceData.productRequests,
     };
   },
+  validations(){
+    return {
+       feedback: {
+        title: { required: helpers.withMessage("Can't be empty", required) },
+        category: { required: helpers.withMessage("Can't be empty", required) },
+        details: { required: helpers.withMessage("Can't be empty", required)},
+      },
+    }
+  },
   methods: {
-    addFeedback() {
+    // addFeedback() {
+    //   this.v$.$validate()
+    //     const newFeedback = {
+    //     id: this.productRequests.length + 1, // Generate a unique ID (you may need a more robust approach)
+    //     title: this.feedback.title,
+    //     category: this.feedback.category,
+    //     upvotes: 0, // You may set other default values as needed
+    //     status: 'suggestion',
+    //     description: this.feedback.details,
+    //     comments: [],
+    //   };
+
+    //   console.log("New Feedback", newFeedback)
+
+    //   // Push the new feedback to the array
+    //   this.productRequests.push(newFeedback);
+
+    //   //this.$router.push({ name: 'SuggestionsComponent' });
+
+    //   // Clear the form after submission
+    //   this.feedback = {
+    //     title: '',
+    //     category: 'Feature',
+    //     details: ''
+    //   };
+    // },
+    async addFeedback(){
+      const isFormCorrect = await this.v$.$validate()
+      console.log(this.v$)
+      if(!isFormCorrect){
+        return
+      }else {
         const newFeedback = {
         id: this.productRequests.length + 1, // Generate a unique ID (you may need a more robust approach)
         title: this.feedback.title,
@@ -87,7 +142,7 @@ export default {
       // Push the new feedback to the array
       this.productRequests.push(newFeedback);
 
-      //this.$router.push({ name: 'SuggestionsComponent' });
+      this.$router.push({ name: 'SuggestionsComponent' });
 
       // Clear the form after submission
       this.feedback = {
@@ -95,8 +150,7 @@ export default {
         category: 'Feature',
         details: ''
       };
-
-      // You may also want to emit an event or make an API call to save the feedback
+      }
     },
     cancel() {
       // You can handle the cancel logic here
@@ -202,6 +256,13 @@ export default {
         width: 9rem;
         height: 2.75rem;
         flex-shrink: 0;
+      }
+      input.error,
+      textarea.error {
+        border: 1px solid red;
+      }
+      .error-msg {
+        color: red;
       }
     }
 </style>
