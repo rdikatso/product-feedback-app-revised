@@ -124,12 +124,13 @@
 </template>
 
 <script>
-import sourceData from '@/data.json'
+// import sourceData from '@/data.json'
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
 import dayjs from 'dayjs'
 import calender from 'dayjs/plugin/calendar'
 import duration from 'dayjs/plugin/duration'
+import { mapGetters, mapActions } from 'vuex'
 dayjs.extend(calender)
 dayjs.extend(duration)
 
@@ -138,7 +139,7 @@ export default {
     name: 'SuggestionsComponent',
     data (){
         return {
-            productRequests: sourceData.productRequests,
+            // productRequests: sourceData.productRequests,
             sortOptions: ['Most Upvotes', 'Least Upvotes', 'Most Comments', 'Least Comments'],
             selected: 'Most Upvotes'
         }
@@ -147,33 +148,13 @@ export default {
         vSelect,
     },
     created(){
-        var now = dayjs();
-        console.log("What is the date now", now);
-        console.log(dayjs('2018-04-13 19:18'))
-        console.log('CALENDAR',dayjs().calendar(dayjs('2008-01-01')))
-
-        console.log("USE FORMAT PLUGIN", dayjs.duration({
-        seconds: 1,
-        minutes: 2,
-        hours: 3,
-        days: 4,
-        months: 6,
-        years: 7
-        }).format('YYYY-MM-DDTHH:mm:ss') )
-
+        // Dispatch actions to fetch data when the component is created
+        this.fetchCurrentUser();
+        this.fetchProductRequests();
     },
     computed: {
+        ...mapGetters(['currentUser', 'productRequests']),
         categories (){
-            // let categories = []
-            // console.log("caterory list at beginning",categories)
-
-            // let filteredCategories = this.productRequests.map (function (item) {
-            //     console.log(item)
-            //    categories.push(item.category)
-            // })
-           
-            // console.log("categories after filtering", filteredCategories)
-
             let categories = this.productRequests.map((item) => {
                 return item.category
             })
@@ -189,19 +170,6 @@ export default {
             return uniqueCategories
         },
         status(){
-
-            //The solution below works. But its an array of arrays which I dont know how to iterate over yet.
-         
-            // const statusArray = this.productRequests.map((item) => {
-            //     return item.status
-            // })
-            // console.log(statusArray)
-            // let uniqueStatus = [...new Set(statusArray)];
-            // console.log("UNIQUE STATUS", uniqueStatus)
-            // const elementCounts = uniqueStatus.map(value => [value, statusArray.filter(str => str === value).length]);
-            // console.log(elementCounts);
-            // return elementCounts
-
             const statusArray = this.productRequests.map((item) => {
                 return item.status
             })
@@ -261,31 +229,9 @@ export default {
             return sortedProductRequests
         }
     },
-    methods: {
-        // select(option){
-        //     console.log("SELECTED OPTION IS", option)
-        //     //let sortedProductRequests = this.productRequests
-        //     if(option == 'Least Comments'){
-        //         this.productRequests = this.productRequests.sort((a,b) => {
-        //             return a.upvotes - b.upvotes
-        //         })
-        //     }
-        //     if(option == 'Most Comments'){
-        //         this.productRequests = this.productRequests.sort((a,b) => {
-        //             return b.upvotes - a.upvotes
-        //         })
-        //     }
-        //      if(option == 'Most Upvotes'){
-        //         this.productRequests = this.productRequests.sort((a,b) => {
-        //            return (a.comments.length === undefined ||  a.comments.length === null) - (b.comments.length === undefined || b.comments.length === null) || a.comments.length - b.comments.length
-        //         })
-        //     }
-
-        //     console.log("SORTED PROPDUCT REQUESTS", this.productRequests)
-
-
-        // }
-    }
+     methods: {
+        ...mapActions(['fetchCurrentUser', 'fetchProductRequests']),
+    },
 }
 </script>
 

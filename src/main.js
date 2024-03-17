@@ -14,7 +14,8 @@ import '@fortawesome/fontawesome-free/js/all.js'
 
 import VueSelect from 'vue-select';
 
-import 'vue-select/dist/vue-select.css'
+import 'vue-select/dist/vue-select.css';
+import store from '@/store/store';
 
 const routes = [
     { path: '/', 
@@ -38,7 +39,6 @@ const routes = [
 
 
 const router = createRouter({
-    // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
     history: createWebHistory(),
     routes, // short for `routes: routes`
 })
@@ -46,6 +46,7 @@ const router = createRouter({
 const feedbackApp = createApp(App)
 
 feedbackApp.use(router)
+feedbackApp.use(store);
 feedbackApp.component('VueSelect', VueSelect);
 
 feedbackApp.mount('#app')
